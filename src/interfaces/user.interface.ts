@@ -3,5 +3,5 @@ export interface IUser {
   username: string;
   email: string;
   role: string;
-  access_token:string
+  access_token: string;
 }

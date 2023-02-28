@@ -1,6 +1,6 @@
 import { UserRoleEnum } from 'src/enums/role-role.enum';
 import { Entity, Column, PrimaryGeneratedColumn, Unique } from 'typeorm';
-import { TimesTampEntity } from '../../../base-entities/times-tamp/times-tamp.entity';
+import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 
 @Entity('users')
 // @Unique(['username', 'email'])

@@ -8,7 +8,7 @@ import {
 } from 'typeorm';
 import { User } from '../../auth/user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
-import { TimesTampEntity } from '../../base-entities/times-tamp/times-tamp.entity';
+import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 
 @Entity('talents')
 export class Talent extends TimesTampEntity {
