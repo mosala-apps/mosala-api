@@ -11,17 +11,17 @@ import {
   NotFoundException,
 } from '@nestjs/common/exceptions';
 import { UserCredentialsDto } from './dto/login-user.dto';
+import { JwtService } from '@nestjs/jwt';
+import { IUser } from '../../interfaces/user.interface';
+import { jwtConstants } from '../constants';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
-  }
-
   async register(registerUserDto: RegisterUserDto): Promise<Partial<User>> {
     const user = this.userRepository.create({ ...registerUserDto });
     try {
@@ -38,7 +38,8 @@ export class UserService {
       throw new Error('oups! Une erreur est survenue ');
     }
   }
-  async login(userCredetials: UserCredentialsDto): Promise<Partial<User>> {
+
+  async login(userCredetials: UserCredentialsDto): Promise<IUser> {
     const { identifier, password } = userCredetials;
 
     try {
@@ -51,12 +52,7 @@ export class UserService {
       } else {
         const hashPassword = await bcrypt.hash(password, userRepo.salt);
         if (hashPassword === userRepo.password) {
-          return {
-            id: userRepo.id,
-            username: userRepo.username,
-            email: userRepo.email,
-            role: userRepo.role,
-          };
+          return this.buildResponsePayload(userRepo);
         } else {
           throw new NotFoundException('Mot de passe erroné');
         }
@@ -87,6 +83,38 @@ export class UserService {
     } = error;
     if (sqlMessage.match('Duplicate')) {
       throw new ConflictException(message);
+    }
+  }
+
+  generateJWT(user: Partial<User>) {
+    const today = new Date();
+    const exp = new Date(today);
+    exp.setDate(today.getDate() + 60);
+    return this.jwtService.sign(
+      {
+        id: user.id,
+        username: user.username,
+        exp: exp.getTime() / 1000,
+        email: user.email,
+      },
+      {
+        secret: jwtConstants.secret,
+      },
+    );
+  }
+
+  private buildResponsePayload(user: Partial<User>): IUser {
+    try {
+      const payload: IUser = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        access_token: this.generateJWT(user),
+      };
+      return payload;
+    } catch (error) {
+    } finally {
     }
   }
 }
