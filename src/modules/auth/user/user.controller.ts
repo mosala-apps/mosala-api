@@ -14,7 +14,7 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import { User } from './entities/user.entity';
 import { UserCredentialsDto } from './dto/login-user.dto';
 
-@Controller('auth/user')
+@Controller('auth')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

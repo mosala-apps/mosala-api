@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   ManyToOne,
@@ -8,6 +9,7 @@ import {
 } from 'typeorm';
 import { ContractTypeEnum } from '~/enums/contract-type.enum';
 import { WorkStatusEnum } from '~/enums/work-status.enum';
+import { User } from '~/modules/auth/user/entities/user.entity';
 import { Client } from '~/modules/client/entities/client.entity';
 import { Talent } from '~/modules/talent/entities/talent.entity';
 import { Technology } from '~/modules/technologies/entities/technology.entity';
@@ -46,9 +48,13 @@ export class Work {
   })
   status: string;
 
-  @ManyToOne(() => Client, (client) => client.works)
+  @ManyToOne(() => Client, (client) => client.works, { eager: true })
   client: Client;
 
-  @ManyToOne(() => Talent, (talent) => talent.works)
+  @ManyToOne(() => Talent, (talent) => talent.works, { eager: true })
   talent: Talent;
+
+  @ManyToOne(() => User, { cascade: true })
+  @JoinColumn({ name: 'createdBy' })
+  createdBy: User;
 }

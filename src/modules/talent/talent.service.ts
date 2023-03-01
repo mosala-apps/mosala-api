@@ -4,6 +4,7 @@ import { getConnection, Repository } from 'typeorm';
 import { displayConflictExceptionMessage } from '~/helpers';
 import { IUser } from '~/interfaces/user.interface';
 import { User } from '../auth/user/entities/user.entity';
+import { UserRepository } from '../auth/user/repository/user.repositoy';
 import { UserService } from '../auth/user/user.service';
 import { CreateTalentDto } from './dto/create-talent.dto';
 import { UpdateTalentDto } from './dto/update-talent.dto';
@@ -14,8 +15,8 @@ export class TalentService {
   constructor(
     @InjectRepository(Talent)
     private readonly talentRepository: Repository<Talent>,
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
+
+    private userRepository: UserRepository,
     private userService: UserService,
   ) {}
 
