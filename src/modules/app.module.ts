@@ -15,6 +15,7 @@ import { ProjectModule } from './project/project.module';
 import { ClientModule } from './client/client.module';
 import { typeOrmConfig } from 'src/ORM';
 import { WorkModule } from './work/work.module';
+import { TechnologiesModule } from './technologies/technologies.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { WorkModule } from './work/work.module';
     ProjectModule,
     ClientModule,
     WorkModule,
+    TechnologiesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

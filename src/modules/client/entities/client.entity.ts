@@ -1,19 +1,11 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Work } from '~/modules/work/entities/work.entity';
+import BaseUserEntity from '~/ORM/base-entities/base-user.entity';
 
 @Entity('clients')
-export class Client {
+export class Client extends BaseUserEntity {
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  name?: string;
-
-  @Column()
-  firstName?: string;
-
-  @Column()
-  lastName?: string;
 
   @OneToMany(() => Work, (work) => work.client)
   works: Work[];
