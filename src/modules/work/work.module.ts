@@ -5,10 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Work } from './entities/work.entity';
 import { Client } from '../client/entities/client.entity';
 import { Talent } from '../talent/entities/talent.entity';
+import { WorkRepository } from './repository/work.repository';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Client, Talent, Work])],
   controllers: [WorkController],
-  providers: [WorkService],
+  providers: [WorkService, WorkRepository],
 })
 export class WorkModule {}

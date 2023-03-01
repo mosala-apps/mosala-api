@@ -2,15 +2,14 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from '../client/entities/client.entity';
-import { CreateWorkDto } from './dto/create-work.dto';
 import { UpdateWorkDto } from './dto/update-work.dto';
 import { Work } from './entities/work.entity';
+import { WorkRepository } from './repository/work.repository';
 
 @Injectable()
 export class WorkService {
   constructor(
-    @InjectRepository(Work)
-    private readonly woprkRepository: Repository<Work>,
+    private readonly woprkRepository: WorkRepository,
     @InjectRepository(Client)
     private clientRepository: Repository<Client>,
   ) {}
