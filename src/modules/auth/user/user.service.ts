@@ -10,13 +10,11 @@ import { UserCredentialsDto } from './dto/login-user.dto';
 import { IUser } from '../../../interfaces/user.interface';
 import { displayConflictExceptionMessage } from '~/helpers';
 import { AuthHelpers } from '~/helpers/auth.helpers';
+import { UserRepository } from './repository/user.repositoy';
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectRepository(User)
-    private userRepository: Repository<User>,
-  ) {}
+  constructor(private userRepository: UserRepository) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<IUser> {
     const user = this.userRepository.create({ ...registerUserDto });
