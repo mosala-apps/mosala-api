@@ -7,7 +7,6 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { UserCredentialsDto } from './dto/login-user.dto';
-import { JwtService } from '@nestjs/jwt';
 import { IUser } from '../../../interfaces/user.interface';
 import { displayConflictExceptionMessage } from '~/helpers';
 import { AuthHelpers } from '~/helpers/auth.helpers';
@@ -17,11 +16,11 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
-    private jwtService: JwtService,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<Partial<User>> {
+  async register(registerUserDto: RegisterUserDto): Promise<IUser> {
     const user = this.userRepository.create({ ...registerUserDto });
+
     try {
       user.salt = await bcrypt.genSalt();
       user.password = await bcrypt.hash(user.password, user.salt);

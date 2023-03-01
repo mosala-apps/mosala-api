@@ -9,11 +9,21 @@ import {
 import { User } from '../../auth/user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
+import { Work } from '~/modules/work/entities/work.entity';
 
 @Entity('talents')
 export class Talent extends TimesTampEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  firstName?: string;
+
+  @Column()
+  lastName?: string;
+
+  @Column()
+  name?: string;
 
   @Column()
   experience?: string;
@@ -40,6 +50,9 @@ export class Talent extends TimesTampEntity {
   @JoinColumn()
   user: User;
 
+  @OneToMany(() => Work, (work) => work.talent)
+  works: Array<Work>;
+  
   @OneToMany(() => Project, (project) => project.talent)
   projects: Array<Project>;
 }

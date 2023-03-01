@@ -18,6 +18,6 @@ export class RegisterUserDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsEnum({ default: UserRoleEnum.ADMIN })
+  // @IsEnum({ default: UserRoleEnum.ADMIN })
   role: UserRoleEnum;
 }
