@@ -6,9 +6,18 @@ import { join } from 'path';
 @Module({
   imports: [
     NestMailerModule.forRoot({
-      transport: {},
-      defaults: {},
-      
+      transport: {
+        host: '',
+        secure: false,
+        auth: {
+          user: '',
+          pass: '',
+        },
+      },
+      defaults: {
+        from: '"No Reply" noreply@gmail.com',
+      },
+
       // config  handlebarsAdapter
       template: {
         dir: join(__dirname, 'template'),
