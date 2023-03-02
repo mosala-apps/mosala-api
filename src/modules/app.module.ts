@@ -16,6 +16,7 @@ import { ClientModule } from './client/client.module';
 import { typeOrmConfig } from 'src/ORM';
 import { WorkModule } from './work/work.module';
 import { TechnologiesModule } from './technologies/technologies.module';
+import { MailerModule } from './mailer/mailer.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TechnologiesModule } from './technologies/technologies.module';
     ClientModule,
     WorkModule,
     TechnologiesModule,
+    MailerModule,
   ],
   controllers: [AppController],
   providers: [AppService],
