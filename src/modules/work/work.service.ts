@@ -34,6 +34,7 @@ export class WorkService {
           numberOfTalents: createWorkDto.numberOfTalents,
           workDuration: createWorkDto.workDuration,
           description: createWorkDto.description,
+          createdBy: createWorkDto.createdBy
         });
 
         const workRepo = await this.woprkRepository.save(workEntity);

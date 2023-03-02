@@ -21,6 +21,9 @@ export class WorkController {
   @Post()
   create(@Body() createWorkDto: CreateWorkDto, @CurrentUser() currentUser) {
     createWorkDto.createdBy = currentUser
+    console.log('====================================');
+    console.log('currentUser:', createWorkDto.createdBy);
+    console.log('====================================');
     return this.workService.create(createWorkDto);
   }
 

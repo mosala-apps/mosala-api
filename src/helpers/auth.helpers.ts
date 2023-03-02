@@ -38,6 +38,7 @@ export class AuthHelpers {
         username: user.username,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
         access_token: this.generateJWT(user),
       };
       return payload;

@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -34,10 +32,7 @@ export class UserService {
     const { identifier, password } = userCredetials;
 
     try {
-      const userRepo = await this.userRepository
-        .createQueryBuilder('u')
-        .where('u.username=:identifier or email=:identifier', { identifier })
-        .getOne();
+      const userRepo = await this.userRepository.getByIdentifier(identifier)
       if (!userRepo) {
         throw new NotFoundException("cet utilisateur n'existe pas");
       } else {

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsOptional } from 'class-validator';
 import { User } from '~/modules/auth/user/entities/user.entity';
 import { CreateClientDto } from '~/modules/client/dto/create-client.dto';
 import { Technology } from '~/modules/technologies/entities/technology.entity';
@@ -25,6 +25,6 @@ export class CreateWorkDto extends CreateClientDto {
   @IsNotEmpty()
   technologies: Technology[];
 
-  @IsNotEmpty()
+  @IsOptional()
   createdBy: User
 }

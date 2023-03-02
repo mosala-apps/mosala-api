@@ -3,5 +3,6 @@ export interface IUser {
   username: string;
   email: string;
   role: string;
+  isActive: boolean,
   access_token: string;
 }
