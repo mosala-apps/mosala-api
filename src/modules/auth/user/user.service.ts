@@ -9,10 +9,14 @@ import { IUser } from '../../../interfaces/user.interface';
 import { displayConflictExceptionMessage } from '~/helpers';
 import { AuthHelpers } from '~/helpers/auth.helpers';
 import { UserRepository } from './repository/user.repositoy';
+import { MailerService } from '~/modules/mailer/mailer.service';
 
 @Injectable()
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private mailerService: MailerService,
+  ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<IUser> {
     const user = this.userRepository.create({ ...registerUserDto });
@@ -32,7 +36,7 @@ export class UserService {
     const { identifier, password } = userCredetials;
 
     try {
-      const userRepo = await this.userRepository.getByIdentifier(identifier)
+      const userRepo = await this.userRepository.getByIdentifier(identifier);
       if (!userRepo) {
         throw new NotFoundException("cet utilisateur n'existe pas");
       } else {
@@ -47,7 +51,15 @@ export class UserService {
       throw new NotFoundException("cet utilisateur n'existe pas");
     }
   }
+  async forgotPassword(email): Promise<string> {
+    try {
+      const user = await this.userRepository.getByIdentifier(email);
 
+      return await this.mailerService.sendForgotPasswordMail(user);
+    } catch (error) {
+      throw new Error("une erreur s'est produit");
+    }
+  }
   async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }

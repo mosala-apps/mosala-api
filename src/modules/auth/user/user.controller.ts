@@ -8,7 +8,6 @@ import {
   Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { User } from './entities/user.entity';
@@ -28,6 +27,10 @@ export class UserController {
     @Body() userCredentialsDto: UserCredentialsDto,
   ): Promise<Partial<User>> {
     return await this.userService.login(userCredentialsDto);
+  }
+  @Post('forgot-password')
+  async forgotPassword(@Body() email: string) {
+    return await this.userService.forgotPassword(email);
   }
   @Get()
   findAll() {
