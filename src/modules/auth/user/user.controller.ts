@@ -12,6 +12,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { User } from './entities/user.entity';
 import { UserCredentialsDto } from './dto/login-user.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 @Controller('auth')
 export class UserController {
@@ -29,8 +31,13 @@ export class UserController {
     return await this.userService.login(userCredentialsDto);
   }
   @Post('forgot-password')
-  async forgotPassword(@Body() email: string) {
+  async forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
+    const { email } = forgotPasswordDto;
     return await this.userService.forgotPassword(email);
+  }
+  @Post('reset-password')
+  async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
+    return await this.userService.resetPassword(resetPasswordDto);
   }
   @Get()
   findAll() {

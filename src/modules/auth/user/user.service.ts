@@ -6,11 +6,14 @@ import * as bcrypt from 'bcrypt';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { UserCredentialsDto } from './dto/login-user.dto';
 import { IUser } from '../../../interfaces/user.interface';
-import { displayConflictExceptionMessage } from '~/helpers';
+import {
+  displayConflictExceptionMessage,
+  hashPasswordWithBcrypt,
+} from '~/helpers';
 import { AuthHelpers } from '~/helpers/auth.helpers';
 import { UserRepository } from './repository/user.repositoy';
 import { MailerService } from '~/modules/mailer/mailer.service';
-import { IForgotPasswordResponse } from '~/interfaces/forgot-password-response.interface';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Injectable()
 export class UserService {
@@ -23,8 +26,9 @@ export class UserService {
     const user = this.userRepository.create({ ...registerUserDto });
 
     try {
-      user.salt = await bcrypt.genSalt();
-      user.password = await bcrypt.hash(user.password, user.salt);
+      const { salt, password } = await hashPasswordWithBcrypt(user.password);
+      user.salt = salt;
+      user.password = password;
       const userRepo = await this.userRepository.save(user);
       return AuthHelpers.getInstance().buildResponsePayload(userRepo);
     } catch (error) {
@@ -59,13 +63,39 @@ export class UserService {
         user,
       );
       if (code) {
-        user.resetPasswordCode = code
-        user.resetPasswordDate = new Date()
-        await this.userRepository.save(user)
+        user.resetPasswordCode = code;
+        user.resetPasswordDate = new Date();
+        await this.userRepository.save(user);
         return message;
       }
     } catch (error) {
       throw new Error("une erreur s'est produit");
+    }
+  }
+  async resetPassword(resetPasswordDto: ResetPasswordDto): Promise<string> {
+    const { code, newPassword } = resetPasswordDto;
+    const user = await this.userRepository.findOne({
+      where: { resetPasswordCode: code },
+    });
+
+    if (user === undefined || user === null) {
+      throw new NotFoundException("Vous n'etes pas reconu dans notre systeme");
+    } else {
+      // on calcule la difference des dates afin de véfifier la validité du code
+      const diffDate = this.getDiffDate(user.resetPasswordDate);
+      if (diffDate >= 1) {
+        return 'Votre code est invalide!';
+      }
+      const { salt, password: hashPassword } = await hashPasswordWithBcrypt(
+        newPassword,
+      );
+      user.salt = salt;
+      user.password = hashPassword;
+      const userUpdate = await this.userRepository.save(user);
+      if (userUpdate) {
+        return 'Mot de passe modifié avec succès !';
+      }
+      throw new NotFoundException('Echec de modification');
     }
   }
   async findAll(): Promise<User[]> {
@@ -82,5 +112,11 @@ export class UserService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+  private getDiffDate(resetPasswordDate: Date): number {
+    const diffDate = Math.abs(
+      new Date().getDate() - new Date(resetPasswordDate).getDate(),
+    );
+    return Math.ceil(diffDate / (1000 * 60 * 60 * 24));
   }
 }
