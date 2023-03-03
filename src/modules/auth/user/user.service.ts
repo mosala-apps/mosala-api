@@ -14,12 +14,15 @@ import { AuthHelpers } from '~/helpers/auth.helpers';
 import { UserRepository } from './repository/user.repositoy';
 import { MailerService } from '~/modules/mailer/mailer.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { UserRoleEnum } from '~/enums/role-role.enum';
+import { TalentRepository } from '~/modules/talent/repository/talent.repository';
 
 @Injectable()
 export class UserService {
   constructor(
     private userRepository: UserRepository,
     private mailerService: MailerService,
+    private talentRepository: TalentRepository,
   ) {}
 
   async register(registerUserDto: RegisterUserDto): Promise<IUser> {
@@ -47,6 +50,9 @@ export class UserService {
       } else {
         const hashPassword = await bcrypt.hash(password, userRepo.salt);
         if (hashPassword === userRepo.password) {
+          if (userRepo.role === UserRoleEnum.TALENT) {
+            // const talentRepo = await this.userRepository.
+          }
           return AuthHelpers.getInstance().buildResponsePayload(userRepo);
         } else {
           throw new NotFoundException('Mot de passe erroné');

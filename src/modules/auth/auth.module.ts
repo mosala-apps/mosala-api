@@ -1,7 +1,8 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { TalentModule } from '../talent/talent.module';
 import { jwtConstants } from './constants';
 import { JwtStrategy } from './strategy/jwt.strategy';
 import { User } from './user/entities/user.entity';
@@ -11,14 +12,16 @@ import { UserService } from './user/user.service';
 
 @Module({
   imports: [
+    forwardRef(() => TalentModule),
     TypeOrmModule.forFeature([User]),
     PassportModule.register({
-      defaultStrategy: 'jwt'
+      defaultStrategy: 'jwt',
     }),
     JwtModule.register({ secret: jwtConstants.secret }),
   ],
   controllers: [UserController],
   providers: [UserService, UserRepository, JwtStrategy],
+  exports: [UserService, UserRepository],
   // exports: [UserService],
 })
 export class AuthModule {}

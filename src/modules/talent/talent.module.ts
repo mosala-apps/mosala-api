@@ -1,15 +1,15 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TalentService } from './talent.service';
 import { TalentController } from './talent.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Talent } from './entities/talent.entity';
-import { User } from '../auth/user/entities/user.entity';
-import { UserService } from '../auth/user/user.service';
-import { UserRepository } from '../auth/user/repository/user.repositoy';
+import { TalentRepository } from './repository/talent.repository';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Talent, User])],
+  imports: [forwardRef(() => AuthModule), TypeOrmModule.forFeature([Talent])],
   controllers: [TalentController],
-  providers: [TalentService, UserService, UserRepository],
+  providers: [TalentService, TalentRepository],
+  exports: [TalentService, TalentRepository],
 })
 export class TalentModule {}

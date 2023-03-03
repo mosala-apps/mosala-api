@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { getConnection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { displayConflictExceptionMessage } from '~/helpers';
 import { IUser } from '~/interfaces/user.interface';
-import { User } from '../auth/user/entities/user.entity';
 import { UserRepository } from '../auth/user/repository/user.repositoy';
 import { UserService } from '../auth/user/user.service';
 import { CreateTalentDto } from './dto/create-talent.dto';
