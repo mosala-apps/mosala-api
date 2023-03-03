@@ -3,6 +3,7 @@ import { MailerService as NodeMailerService } from '@nestjs-modules/mailer';
 import { faker } from '@faker-js/faker';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../auth/user/entities/user.entity';
+import { IForgotPasswordResponse } from '~/interfaces/forgot-password-response.interface';
 
 @Injectable()
 export class MailerService {
@@ -10,7 +11,7 @@ export class MailerService {
     private readonly nodeMailerService: NodeMailerService,
     private configSevice: ConfigService,
   ) {}
-  async sendForgotPasswordMail(user: User): Promise<string> {
+  async sendForgotPasswordMail(user: User): Promise<IForgotPasswordResponse> {
     const code = this.generateCode();
     try {
       await this.nodeMailerService.sendMail({
@@ -24,7 +25,7 @@ export class MailerService {
           user,
         },
       });
-      return 'Le mail envoyé avec succès';
+      return { code, message: 'Le mail envoyé avec succès' };
     } catch (error) {
       throw new Error("Echec d'envoi de mail Réinitialisation du mot passe ");
     }

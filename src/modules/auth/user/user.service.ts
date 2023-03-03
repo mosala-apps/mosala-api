@@ -10,6 +10,7 @@ import { displayConflictExceptionMessage } from '~/helpers';
 import { AuthHelpers } from '~/helpers/auth.helpers';
 import { UserRepository } from './repository/user.repositoy';
 import { MailerService } from '~/modules/mailer/mailer.service';
+import { IForgotPasswordResponse } from '~/interfaces/forgot-password-response.interface';
 
 @Injectable()
 export class UserService {
@@ -54,8 +55,15 @@ export class UserService {
   async forgotPassword(email): Promise<string> {
     try {
       const user = await this.userRepository.getByIdentifier(email);
-
-      return await this.mailerService.sendForgotPasswordMail(user);
+      const { code, message } = await this.mailerService.sendForgotPasswordMail(
+        user,
+      );
+      if (code) {
+        user.resetPasswordCode = code
+        user.resetPasswordDate = new Date()
+        await this.userRepository.save(user)
+        return message;
+      }
     } catch (error) {
       throw new Error("une erreur s'est produit");
     }

@@ -32,6 +32,7 @@ export class User extends TimesTampEntity {
 
   @Column()
   resetPasswordCode: string;
-  @this.createAt
+
+  @Column({ type: 'datetime', nullable: true })
   resetPasswordDate: Date;
 }
