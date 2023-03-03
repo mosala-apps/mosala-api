@@ -3,6 +3,19 @@ import { IsNotEmpty } from 'class-validator';
 import { RegisterUserDto } from '~/modules/auth/user/dto/register-user.dto';
 
 export class CreateTalentDto extends RegisterUserDto {
+  
+  @ApiProperty()
+  @IsNotEmpty()
+  firstName?: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  lastName: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  name: string;
+
   @ApiProperty()
   @IsNotEmpty()
   experience?: string;

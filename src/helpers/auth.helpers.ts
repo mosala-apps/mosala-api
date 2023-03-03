@@ -1,6 +1,7 @@
 import { jwtConstants } from '~/modules/auth/constants';
 import { IUserResponse } from '~/interfaces/user.response.interface';
 import { JwtService } from '@nestjs/jwt';
+import { ITalentResponse } from '~/interfaces/talent.response.interface';
 
 export class AuthHelpers {
   private jwtService: JwtService;
@@ -31,13 +32,40 @@ export class AuthHelpers {
     );
   }
 
-  buildResponsePayload(user: Partial<IUserResponse>): IUserResponse {
+  renderUserResponse(user: Partial<IUserResponse>): IUserResponse {
     try {
       const payload: IUserResponse = {
         id: user.id,
         username: user.username,
         email: user.email,
         role: user.role,
+        isActive: user.isActive,
+        access_token: this.generateJWT(user),
+      };
+      return payload;
+    } catch (error) {
+    } finally {
+    }
+  }
+
+  renderTalentResponse(user: Partial<ITalentResponse>): ITalentResponse {
+    try {
+      const payload: ITalentResponse = {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        talentId: user.talentId,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        name: user.name,
+        experience: user.experience,
+        level: user.level,
+        education: user.education,
+        githubLink: user.githubLink,
+        websiteLink: user.websiteLink,
+        location: user.location,
+        phone: user.phone,
         isActive: user.isActive,
         access_token: this.generateJWT(user),
       };

@@ -17,6 +17,7 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UserRoleEnum } from '~/enums/role-role.enum';
 import { TalentRepository } from '~/modules/talent/repository/talent.repository';
 import { ITalentResponse } from '~/interfaces/talent.response.interface';
+import { Talent } from '~/modules/talent/entities/talent.entity';
 
 @Injectable()
 export class UserService {
@@ -34,7 +35,7 @@ export class UserService {
       user.salt = salt;
       user.password = password;
       const userRepo = await this.userRepository.save(user);
-      return AuthHelpers.getInstance().buildResponsePayload(userRepo);
+      return AuthHelpers.getInstance().renderUserResponse(userRepo);
     } catch (error) {
       displayConflictExceptionMessage(error, 'Cet utilisateur existe déja');
       throw new Error('oups! Une erreur est survenue ');
@@ -54,15 +55,12 @@ export class UserService {
         const hashPassword = await bcrypt.hash(password, userRepo.salt);
         if (hashPassword === userRepo.password) {
           const userResponse =
-            AuthHelpers.getInstance().buildResponsePayload(userRepo);
+            AuthHelpers.getInstance().renderUserResponse(userRepo);
           if (userRepo.role === UserRoleEnum.TALENT) {
             const talentRepo = await this.talentRepository.findByUser(
               userRepo.id,
             );
-            console.log('====================================');
-            console.log(talentRepo, userRepo);
-            console.log('====================================');
-            return { ...userResponse, talentRepo } as ITalentResponse;
+            return this.getTalentResponse(userRepo, talentRepo);
           }
           return userResponse;
         } else {
@@ -135,5 +133,36 @@ export class UserService {
       new Date().getDate() - new Date(resetPasswordDate).getDate(),
     );
     return Math.ceil(diffDate / (1000 * 60 * 60 * 24));
+  }
+
+  private getTalentResponse(user: User, talent: Talent): ITalentResponse {
+    const {
+      id: talentId,
+      firstName,
+      lastName,
+      name,
+      experience,
+      level,
+      education,
+      githubLink,
+      websiteLink,
+      location,
+      phone,
+    } = talent;
+
+    return AuthHelpers.getInstance().renderTalentResponse({
+      ...user,
+      talentId,
+      firstName,
+      lastName,
+      name,
+      experience,
+      level,
+      education,
+      githubLink,
+      websiteLink,
+      location,
+      phone,
+    });
   }
 }
