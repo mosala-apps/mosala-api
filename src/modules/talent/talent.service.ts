@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { displayConflictExceptionMessage } from '~/helpers';
-import { IUser } from '~/interfaces/user.interface';
+import { IUserResponse } from '~/interfaces/user.response.interface';
 import { UserRepository } from '../auth/user/repository/user.repositoy';
 import { UserService } from '../auth/user/user.service';
 import { CreateTalentDto } from './dto/create-talent.dto';
@@ -21,7 +21,7 @@ export class TalentService {
 
   async create(
     createTalentDto: CreateTalentDto,
-  ): Promise<Talent & IUser & any> {
+  ): Promise<Talent & IUserResponse & any> {
     try {
       const userCreated = await this.userService.register({
         username: createTalentDto.username,

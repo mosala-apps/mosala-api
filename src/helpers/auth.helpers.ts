@@ -1,5 +1,5 @@
 import { jwtConstants } from '~/modules/auth/constants';
-import { IUser } from 'src/interfaces/user.interface';
+import { IUserResponse } from '~/interfaces/user.response.interface';
 import { JwtService } from '@nestjs/jwt';
 
 export class AuthHelpers {
@@ -14,7 +14,7 @@ export class AuthHelpers {
     }
     return AuthHelpers.instance;
   }
-  generateJWT(user: Partial<IUser>) {
+  generateJWT(user: Partial<IUserResponse>) {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);
@@ -31,9 +31,9 @@ export class AuthHelpers {
     );
   }
 
-  buildResponsePayload(user: Partial<IUser>): IUser {
+  buildResponsePayload(user: Partial<IUserResponse>): IUserResponse {
     try {
-      const payload: IUser = {
+      const payload: IUserResponse = {
         id: user.id,
         username: user.username,
         email: user.email,

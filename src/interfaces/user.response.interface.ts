@@ -1,4 +1,4 @@
-export interface IUser {
+export interface IUserResponse {
   id: number;
   username: string;
   email: string;

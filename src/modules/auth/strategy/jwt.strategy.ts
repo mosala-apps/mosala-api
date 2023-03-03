@@ -1,7 +1,7 @@
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable } from '@nestjs/common';
-import { IUser } from '~/interfaces/user.interface';
+import { IUserResponse } from '~/interfaces/user.response.interface';
 import { jwtConstants } from '../constants';
 import { UserRepository } from '../user/repository/user.repositoy';
 import { UnauthorizedException } from '@nestjs/common';
@@ -14,7 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: jwtConstants.secret,
     });
   }
-  async validate(paylaod: IUser) {
+  async validate(paylaod: IUserResponse) {
     try {
       const user = await this.userRepository.getUserActive(paylaod);
       if (Object.keys(user)) {

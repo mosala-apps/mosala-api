@@ -5,7 +5,7 @@ import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { NotFoundException } from '@nestjs/common/exceptions';
 import { UserCredentialsDto } from './dto/login-user.dto';
-import { IUser } from '../../../interfaces/user.interface';
+import { IUserResponse } from '../../../interfaces/user.response.interface';
 import {
   displayConflictExceptionMessage,
   hashPasswordWithBcrypt,
@@ -16,6 +16,7 @@ import { MailerService } from '~/modules/mailer/mailer.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UserRoleEnum } from '~/enums/role-role.enum';
 import { TalentRepository } from '~/modules/talent/repository/talent.repository';
+import { ITalentResponse } from '~/interfaces/talent.response.interface';
 
 @Injectable()
 export class UserService {
@@ -25,7 +26,7 @@ export class UserService {
     private talentRepository: TalentRepository,
   ) {}
 
-  async register(registerUserDto: RegisterUserDto): Promise<IUser> {
+  async register(registerUserDto: RegisterUserDto): Promise<IUserResponse> {
     const user = this.userRepository.create({ ...registerUserDto });
 
     try {
@@ -40,7 +41,9 @@ export class UserService {
     }
   }
 
-  async login(userCredetials: UserCredentialsDto): Promise<IUser> {
+  async login(
+    userCredetials: UserCredentialsDto,
+  ): Promise<IUserResponse | ITalentResponse> {
     const { identifier, password } = userCredetials;
 
     try {
@@ -50,10 +53,18 @@ export class UserService {
       } else {
         const hashPassword = await bcrypt.hash(password, userRepo.salt);
         if (hashPassword === userRepo.password) {
+          const userResponse =
+            AuthHelpers.getInstance().buildResponsePayload(userRepo);
           if (userRepo.role === UserRoleEnum.TALENT) {
-            // const talentRepo = await this.userRepository.
+            const talentRepo = await this.talentRepository.findByUser(
+              userRepo.id,
+            );
+            console.log('====================================');
+            console.log(talentRepo, userRepo);
+            console.log('====================================');
+            return { ...userResponse, talentRepo } as ITalentResponse;
           }
-          return AuthHelpers.getInstance().buildResponsePayload(userRepo);
+          return userResponse;
         } else {
           throw new NotFoundException('Mot de passe erroné');
         }
