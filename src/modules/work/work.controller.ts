@@ -6,7 +6,7 @@ import {
   Patch,
   Param,
   Delete,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { WorkService } from './work.service';
 import { CreateWorkDto } from './dto/create-work.dto';
@@ -20,10 +20,7 @@ export class WorkController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createWorkDto: CreateWorkDto, @CurrentUser() currentUser) {
-    createWorkDto.createdBy = currentUser
-    console.log('====================================');
-    console.log('currentUser:', createWorkDto.createdBy);
-    console.log('====================================');
+    createWorkDto.createdBy = currentUser;
     return this.workService.create(createWorkDto);
   }
 
@@ -39,7 +36,13 @@ export class WorkController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWorkDto: UpdateWorkDto) {
+  @UseGuards(JwtAuthGuard)
+  update(
+    @Param('id') id: string,
+    @Body() updateWorkDto: UpdateWorkDto,
+    @CurrentUser() currentUser,
+  ) {
+    updateWorkDto.updatedBy = currentUser;
     return this.workService.update(+id, updateWorkDto);
   }
 

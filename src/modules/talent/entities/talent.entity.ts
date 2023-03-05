@@ -9,7 +9,7 @@ import {
 import { User } from '../../auth/user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
-import { Work } from '~/modules/work/entities/work.entity';
+import { TalentsWorkClients } from '~/modules/talents_work_clients/entities/talents-work-clients.entity';
 
 @Entity('talents')
 export class Talent extends TimesTampEntity {
@@ -50,9 +50,9 @@ export class Talent extends TimesTampEntity {
   @JoinColumn()
   user: User;
 
-  @OneToMany(() => Work, (work) => work.talent)
-  works: Array<Work>;
-  
+  @OneToMany(() => TalentsWorkClients, (work) => work.talent)
+  works: Array<TalentsWorkClients>;
+
   @OneToMany(() => Project, (project) => project.talent)
   projects: Array<Project>;
 }

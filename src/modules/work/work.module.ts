@@ -6,9 +6,13 @@ import { Work } from './entities/work.entity';
 import { Client } from '../client/entities/client.entity';
 import { Talent } from '../talent/entities/talent.entity';
 import { WorkRepository } from './repository/work.repository';
+import { TalentsWorkClientsModule } from '../talents_work_clients/talents_work_clients.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Client, Talent, Work])],
+  imports: [
+    TalentsWorkClientsModule,
+    TypeOrmModule.forFeature([Client, Talent, Work]),
+  ],
   controllers: [WorkController],
   providers: [WorkService, WorkRepository],
 })
