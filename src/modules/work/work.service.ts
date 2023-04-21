@@ -2,7 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Client } from '../client/entities/client.entity';
-import { TalentsWorkClientsService } from '../talents_work_clients/talents_work_clients.service';
+import { Talent } from '../talent/entities/talent.entity';
+import { TalentRepository } from '../talent/repository/talent.repository';
 import { UpdateWorkDto } from './dto/update-work.dto';
 import { Work } from './entities/work.entity';
 import { WorkRepository } from './repository/work.repository';
@@ -13,10 +14,10 @@ export class WorkService {
     private readonly woprkRepository: WorkRepository,
     @InjectRepository(Client)
     private clientRepository: Repository<Client>,
-    private talentsWorkClientService: TalentsWorkClientsService,
+    private talentRepository: TalentRepository,
   ) {}
 
-  async create(createWorkDto): Promise<Work|string> {
+  async create(createWorkDto): Promise<Work | string> {
     try {
       const { name, firstName, lastName, email, phone } = createWorkDto;
 
@@ -36,13 +37,10 @@ export class WorkService {
           workDuration: createWorkDto.workDuration,
           description: createWorkDto.description,
           createdBy: createWorkDto.createdBy,
+          client: clientRepo,
         });
         const workRepo = await this.woprkRepository.save(workEntity);
-        const talentsWorkClients = await this.talentsWorkClientService.create(
-          clientRepo,
-          workRepo,
-        );
-        if (talentsWorkClients) {
+        if (workRepo !== undefined && workRepo !== null) {
           return workRepo;
         }
         return " Une eurreur s'est produit";
@@ -61,8 +59,40 @@ export class WorkService {
       return await this.woprkRepository.findOneOrFail({ where: { id } });
     } catch (error) {}
   }
-
-  update(id: number, updateWorkDto: UpdateWorkDto) {
+  async matching(id: number, updateWorkDto: UpdateWorkDto) {
+    // try {
+    //   // const work = await this.findOne(id);
+    //   // const talents: Talent[] = [];
+    //   // console.log('====================================');
+    //   // console.log('work', work);
+    //   // console.log('====================================');
+    //   // if (work) {
+    //   //   updateWorkDto.talents.forEach(async (item) => {
+    //   //     const talent = await this.talentRepository.findByIds({
+    //   //       where: { id: item },
+    //   //     });
+    //   //     work.talents = [talent];
+    //   //     await talents.push(talent);
+    //   //     console.log('====================================');
+    //   //     console.log(talent);
+    //   //     console.log('====================================');
+    //   //   });
+    //   //   console.log('====================================');
+    //   //   console.log('talents array:', talents);
+    //   //   console.log('====================================');
+    //   //   return await this.woprkRepository.save(work);
+    //   }
+    //   return `Echec du matching`;
+    // } catch (error) {
+    //   throw new Error("Une erreur s'est produit lors du matching");
+    // }
+    return 'je';
+  }
+  async update(id: number, updateWorkDto: UpdateWorkDto) {
+    const work = await this.findOne(id);
+    // if (work) {
+    //   const workUpdated = await this.talentsWorkClientService.
+    // }
     return `This action updates a #${id} work`;
   }
 

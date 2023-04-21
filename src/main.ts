@@ -7,7 +7,7 @@ import { CalculateExecutionTimeOfRequestInterceptor } from './interceptors/calcu
 import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
   // on configure Morgan afin de nous aider aux logs
   app.use(morgan('dev'));
@@ -22,6 +22,7 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({ origin: '*' });
   // on calcule le temps d'execution des chaque requete afin d'en optimiser si possible
   app.useGlobalInterceptors(new CalculateExecutionTimeOfRequestInterceptor());
 

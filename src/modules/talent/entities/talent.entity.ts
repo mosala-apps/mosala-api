@@ -4,12 +4,13 @@ import {
   JoinColumn,
   OneToMany,
   OneToOne,
+  ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { User } from '../../auth/user/entities/user.entity';
 import { Project } from '../../project/entities/project.entity';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
-import { TalentsWorkClients } from '~/modules/talents_work_clients/entities/talents-work-clients.entity';
+import { Work } from '~/modules/work/entities/work.entity';
 
 @Entity('talents')
 export class Talent extends TimesTampEntity {
@@ -50,8 +51,8 @@ export class Talent extends TimesTampEntity {
   @JoinColumn()
   user: User;
 
-  @OneToMany(() => TalentsWorkClients, (work) => work.talent)
-  works: Array<TalentsWorkClients>;
+  @ManyToMany(() => Work, (work) => work.talents)
+  works: Array<Work>;
 
   @OneToMany(() => Project, (project) => project.talent)
   projects: Array<Project>;

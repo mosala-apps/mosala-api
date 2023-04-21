@@ -17,7 +17,6 @@ import { typeOrmConfig } from 'src/ORM';
 import { WorkModule } from './work/work.module';
 import { TechnologiesModule } from './technologies/technologies.module';
 import { MailerModule } from './mailer/mailer.module';
-import { TalentsWorkClientsModule } from './talents_work_clients/talents_work_clients.module';
 
 @Module({
   imports: [
@@ -34,17 +33,14 @@ import { TalentsWorkClientsModule } from './talents_work_clients/talents_work_cl
     WorkModule,
     TechnologiesModule,
     MailerModule,
-    TalentsWorkClientsModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
-    consumer
-      .apply(IsAuthenticatedMiddleware)
-      .forRoutes('auth')
-      .apply(HelmetMiddleware)
-      .forRoutes(''); // permet d'ajouter des headers contre des attaques...
+    consumer.apply(IsAuthenticatedMiddleware).forRoutes('auth');
+    //  .apply(HelmetMiddleware)
+    //  .forRoutes(''); // permet d'ajouter des headers contre des attaques...
   }
 }

@@ -7,6 +7,8 @@ import {
   Param,
   Delete,
   UseGuards,
+  ParseIntPipe,
+  Put,
 } from '@nestjs/common';
 import { WorkService } from './work.service';
 import { CreateWorkDto } from './dto/create-work.dto';
@@ -44,6 +46,17 @@ export class WorkController {
   ) {
     updateWorkDto.updatedBy = currentUser;
     return this.workService.update(+id, updateWorkDto);
+  }
+
+  @Put('matching/:id')
+  @UseGuards(JwtAuthGuard)
+  matching(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateWorkDto: UpdateWorkDto,
+    @CurrentUser() currentUser,
+  ) {
+    updateWorkDto.updatedBy = currentUser;
+    return this.workService.matching(id, updateWorkDto);
   }
 
   @Delete(':id')

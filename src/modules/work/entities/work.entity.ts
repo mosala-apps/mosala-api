@@ -5,13 +5,13 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { ContractTypeEnum } from '~/enums/contract-type.enum';
 import { WorkStatusEnum } from '~/enums/work-status.enum';
 import { User } from '~/modules/auth/user/entities/user.entity';
-import { TalentsWorkClients } from '~/modules/talents_work_clients/entities/talents-work-clients.entity';
+import { Client } from '~/modules/client/entities/client.entity';
+import { Talent } from '~/modules/talent/entities/talent.entity';
 import { Technology } from '~/modules/technologies/entities/technology.entity';
 
 @Entity('works')
@@ -48,8 +48,15 @@ export class Work {
   })
   status: string;
 
-  @OneToMany(() => TalentsWorkClients, (work) => work.work, { cascade: true })
-  talentsWorkClients: TalentsWorkClients[];
+  @ManyToMany(() => Talent, (talent) => talent.works, { cascade: true })
+  @JoinTable({ name: 'work_talents' })
+  talents: Talent[];
+
+  @ManyToOne(() => Client, (client) => client.works, {
+    cascade: true,
+    nullable: true,
+  })
+  client: Client;
 
   @ManyToOne(() => User, { cascade: true })
   @JoinColumn({ name: 'createdBy' })
